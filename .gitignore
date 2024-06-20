@@ -1,0 +1,13 @@
+.env
+__pycache__/
+*.py[cod]
+*.pyo
+.pytest_cache/
+venv/
+env/
+.venv/
+*.csv
+.ipynb_checkpoints/
+.DS_Store
+.vscode/
+Ignore/
