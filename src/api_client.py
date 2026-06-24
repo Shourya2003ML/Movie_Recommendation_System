@@ -19,7 +19,7 @@ except (FileNotFoundError, KeyError):
 _TMDB_BASE_URL = "https://api.themoviedb.org/3"
 _TMDB_IMAGE_BASE = "https://image.tmdb.org/t/p/w500"
 
-_PLACEHOLDER_URL = "https://via.placeholder.com/500x750/1a1a2e/ffffff?text=No+Poster"
+
 
 
 def get_movie_details(tmdb_id):
@@ -48,7 +48,7 @@ def get_movie_details(tmdb_id):
         poster_url = (
             f"{_TMDB_IMAGE_BASE}{poster_path}"
             if poster_path
-            else _PLACEHOLDER_URL
+            else None
         )
 
         release_date = data.get("release_date", "")
@@ -69,7 +69,7 @@ def get_movie_details(tmdb_id):
         if e.response is not None:
             return _fallback_details(f"HTTP {e.response.status_code}")
         else:
-            return "No Response"
+            return _fallback_details("No Response")
     
     except requests.exceptions.RequestException:
         return _fallback_details("Network error")
@@ -80,7 +80,7 @@ def get_movie_details(tmdb_id):
 
 def _fallback_details(reason = ""):
     return {
-        "poster_url" : _PLACEHOLDER_URL,
+        "poster_url" : None,
         "title" : "Unknown",
         "rating": 0.0,
         "year": "N/A",
