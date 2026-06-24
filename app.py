@@ -20,11 +20,7 @@ st.set_page_config(
 
 @st.cache_resource(show_spinner="Building recommendation models...")
 def load_everything():
-    df_movies, df_ratings = load_data(
-        movies_path="movies.csv",
-        ratings_path="ratings.csv",
-        links_path="links.csv",
-    )
+    df_movies = load_data(movies_path="movies.csv")
     rec = MovieRecommender(df_movies)  # type: ignore
     titles = sorted(df_movies["title"].dropna().tolist())
     return rec, titles

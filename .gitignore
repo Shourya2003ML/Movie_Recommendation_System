@@ -11,3 +11,6 @@ env/
 .vscode/
 Ignore/
 README.txt
+ratings.csv
+links.csv
+tags.csv

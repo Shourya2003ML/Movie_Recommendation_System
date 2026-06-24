@@ -13,37 +13,16 @@ def _check_for_files(*paths):
             )
 
 #Loading the data from the csv files        
-def load_data(
-        movies_path = "movies.csv",
-        ratings_path = "ratings.csv",
-        links_path = "links.csv",
-):
-    _check_for_files(movies_path, links_path, ratings_path)
+def load_data(movies_path = "movies.csv"):
+    _check_for_files(movies_path)
 
     #loading the csv 
     df_movies = pd.read_csv(movies_path)
-    df_ratings = pd.read_csv(ratings_path)
-    df_links = pd.read_csv(links_path)
 
     print(f"Movies loaded: {len(df_movies):,} rows")
-    print(f"Ratings loaded: {len(df_ratings):,} rows")
-    print(f"Links loaded: {len(df_links):,} rows")
 
+    # 'id' column in movies.csv is the TMDB ID
     df_movies = df_movies.rename(columns = {"id": "tmdbId"})
-
-    #cleaning links.csv so that no sparsity is less
-    df_links = df_links.dropna(subset=["tmdbId"])
-    df_links["tmdbId"] = df_links["tmdbId"].astype(int)
-
-    #Creating the mapping from movies.csv to ratings.csv using linking.csv
-    df_ratings_mapped = pd.merge(
-        df_ratings,
-        df_links[["movieId", "tmdbId"]],
-        on = "movieId",
-        how = "inner",
-    )
-
-    print(f"Ratings with TMDB IDs: {len(df_ratings_mapped):,} rows")
 
     #handling missing values
 
@@ -74,4 +53,4 @@ def load_data(
     print(f"Final clean movies: {len(df_movies):,}")
     print("Data loading complete.\n")
 
-    return df_movies, df_ratings_mapped
+    return df_movies
