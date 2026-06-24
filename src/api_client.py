@@ -5,13 +5,16 @@
 
 import os
 import requests
+import streamlit as st
 from dotenv import load_dotenv
 
 load_dotenv()
 
-_TMDB_API_KEY = os.getenv("TMDB_API_KEY")
-
-#_TMDB_API_KEY = os.environ.get("TMDB_API_KEY", "")
+# Try Streamlit secrets first (for Streamlit Cloud), then .env (for local dev)
+try:
+    _TMDB_API_KEY = st.secrets["TMDB_API_KEY"]
+except (FileNotFoundError, KeyError):
+    _TMDB_API_KEY = os.getenv("TMDB_API_KEY", "")
 
 _TMDB_BASE_URL = "https://api.themoviedb.org/3"
 _TMDB_IMAGE_BASE = "https://image.tmdb.org/t/p/w500"

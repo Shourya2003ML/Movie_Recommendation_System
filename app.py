@@ -91,18 +91,26 @@ if find:
                 else:
                     details = {"poster_url": None, "rating": None, "year": "N/A", "overview": ""}
                 merged = {**rec, **details}
+                # Use dataset title if TMDB returned "Unknown"
+                if merged.get("title") == "Unknown" or not merged.get("title"):
+                    merged["title"] = rec.get("title", "Unknown")
+                # Prefer TMDB overview, fall back to dataset overview
                 merged["overview"] = details.get("overview") or rec.get("dataset_overview", "")
                 enriched.append(merged)
 
-        valid = [m for m in enriched if m.get("poster_url") and m.get("title") != "Unknown"]
+        # Show movies with posters first, then those without
+        valid = [m for m in enriched if m.get("poster_url")]
+        no_poster = [m for m in enriched if not m.get("poster_url")]
+        display_list = (valid + no_poster)[:num_results]
 
         COLS = 5
-        for row_start in range(0, len(valid), COLS):
-            row = valid[row_start: row_start + COLS]
+        for row_start in range(0, len(display_list), COLS):
+            row = display_list[row_start: row_start + COLS]
             cols = st.columns(COLS)
             for col, movie in zip(cols, row):
                 with col:
-                    st.image(movie["poster_url"], use_container_width=True)
+                    if movie.get("poster_url"):
+                        st.image(movie["poster_url"], use_container_width=True)
                     st.markdown(f"**{movie['title']}**")
                     year = movie.get("year", "N/A")
                     score = int(movie["score"] * 100)
